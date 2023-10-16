@@ -17,4 +17,10 @@ class Student extends Model
         'class_id',
         'address'
     ];
+    public function Section(){
+        return $this->belongsTo(Section::class);
+    }
+    public  function Class(){
+        return $this->belongsTo(Classes::class);
+    }
 }
