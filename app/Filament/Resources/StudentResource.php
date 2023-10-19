@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\StudentsExport;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Section;
 use App\Models\Student;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -15,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use mysql_xdevapi\Collection;
 
 class StudentResource extends Resource
 {
@@ -76,7 +79,11 @@ class StudentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('student selected')
+                        ->icon('')
+                        ->action(fn(\Illuminate\Database\Eloquent\Collection $records) => (new StudentsExport($records))->download('student.xlsx'))
                 ]),
+
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
